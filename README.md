@@ -6,4 +6,6 @@
 
 Planned features:
 - TWEEN 
-- 
+- SHADING (Phong and Gouraud)
+- LIGHT
+- Change the behavior of vary
