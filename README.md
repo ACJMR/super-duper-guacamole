@@ -5,7 +5,7 @@
 ## Final Project
 
 Planned features:
-- TWEEN 
+- MESH 
 - SHADING (Phong and Gouraud)
 - LIGHT
 - Change the behavior of vary
