@@ -21,7 +21,10 @@ def add_obj(polygons, filename):
             pts = [args[1], args[2], args[3]]
             vertices.append(pts)
         elif args[0] == 'f':
-            pts = [args[1], args[2], args[3]]
+            if len(args) == 4:
+                pts = [args[1], args[2], args[3]]
+            elif len(args) == 5:
+                pts = [args[1], args[2], args[3], args[4]]
             faces.append(pts)
     print(vertices)
     print(faces)
@@ -60,12 +63,12 @@ def add_obj(polygons, filename):
             x0 = float(vertices[vertex3][0])
             y0 = float(vertices[vertex3][1])
             z0 = float(vertices[vertex3][2])
-            x1 = float(vertices[vertex2][0])
-            y1 = float(vertices[vertex2][1])
-            z1 = float(vertices[vertex2][2])
-            x2 = float(vertices[vertex4][0])
-            y2 = float(vertices[vertex4][1])
-            z2 = float(vertices[vertex4][2])
+            x1 = float(vertices[vertex4][0])
+            y1 = float(vertices[vertex4][1])
+            z1 = float(vertices[vertex4][2])
+            x2 = float(vertices[vertex1][0])
+            y2 = float(vertices[vertex1][1])
+            z2 = float(vertices[vertex1][2])
             add_polygon(polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2)
 
 def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
