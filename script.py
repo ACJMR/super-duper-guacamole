@@ -129,12 +129,20 @@ def run(filename):
         screen = new_screen()
         zbuffer = new_zbuffer()
         tmp = []
+        print(commands)
         for command in commands:
             c = command['op']
             args = command['args']
             knob_value = 1
 
-            if c == 'box':
+            if c == 'mesh':
+                print(args[0])
+                filename = args[0] + ".obj"
+                add_obj(tmp, filename)
+                matrix_mult(stack[-1], tmp)
+                draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
+                tmp = []
+            elif c == 'box':
                 if command['constants']:
                     reflect = command['constants']
                 add_box(tmp,
