@@ -103,6 +103,7 @@ def run(filename):
                          {'red': [0.2, 0.5, 0.5],
                           'green': [0.2, 0.5, 0.5],
                           'blue': [0.2, 0.5, 0.5]}]
+    symbols['light'] = [light]
     reflect = '.white'
 
     (name, num_frames) = first_pass(commands)
@@ -134,6 +135,9 @@ def run(filename):
             c = command['op']
             args = command['args']
             knob_value = 1
+
+            if c == 'light':
+                symbols['light'].append([[args[0],args[1],args[2]],[args[3],args[4],args[5]]])
 
             if c == 'mesh':
                 print(args[0])
