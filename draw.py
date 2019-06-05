@@ -19,13 +19,62 @@ def add_obj(polygons, filename):
     for line in filtered:
         args = line.split()
         if args[0] == 'v':
-            pts = [args[1], args[2], args[3]]
+            p1 = args[1]
+            p2 = args[2]
+            p3 = args[3]
+            pts = [p1, p2, p3]
             vertices.append(pts)
         elif args[0] == 'f':
             if len(args) == 4:
-                pts = [args[1], args[2], args[3]]
+                if '//' in args[1]:
+                    print("found //")
+                    p1 = args[1]
+                    p1 = p1.split('//')[0]
+                    p2 = args[2]
+                    p2 = p2.split('//')[0]
+                    p3 = args[3]
+                    p3 = p3.split('//')[0]
+                elif '/' in args[1]:
+                    print("found /")
+                    p1 = args[1]
+                    p1 = p1.split('/')[0]
+                    p2 = args[2]
+                    p2 = p2.split('/')[0]
+                    p3 = args[3]
+                    p3 = p3.split('/')[0]
+                else:
+                    print("didnt find anything")
+                    p1 = args[1]
+                    p2 = args[2]
+                    p3 = args[3]
+                pts = [p1, p2, p3]
             elif len(args) == 5:
-                pts = [args[1], args[2], args[3], args[4]]
+                if '//' in args[1]:
+                    print("FOUND //")
+                    p1 = args[1]
+                    p1 = p1.split('//')[0]
+                    p2 = args[2]
+                    p2 = p2.split('//')[0]
+                    p3 = args[3]
+                    p3 = p3.split('//')[0]
+                    p4 = args[4]
+                    p4 = p4.split('//')[0]
+                elif '/' in args[1]:
+                    p1 = args[1]
+                    p1 = p1.split('/')[0]
+                    p2 = args[2]
+                    p2 = p2.split('/')[0]
+                    p3 = args[3]
+                    p3 = p3.split('/')[0]
+                    p4 = args[4]
+                    p4 = p4.split('/')[0]
+                else:
+                    print("DID NOT FIND ANYTHING")
+                    p1 = args[1]
+                    p2 = args[2]
+                    p3 = args[3]
+                    p4 = args[4]
+                pts = [p1, p2, p3, p4]
             faces.append(pts)
     print(vertices)
     print(faces)
@@ -45,6 +94,7 @@ def add_obj(polygons, filename):
             y2 = float(vertices[vertex3][1])
             z2 = float(vertices[vertex3][2])
             add_polygon(polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2)
+
         elif len(face) == 4:
             print("FOUR LINES")
             vertex1 = (int(face[0]) - 1) % len(vertices)
