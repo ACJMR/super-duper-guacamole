@@ -279,10 +279,21 @@ def p_command_basename(p):
     commands.append(cmd)
 
 def p_command_vary(p):
-    """command : VARY SYMBOL NUMBER NUMBER NUMBER NUMBER"""
-    cmd = {'op' : p[1], 'args' : p[3:], 'knob' : p[2]}
-    symbols[p[2]] = ['knob', 0]
-    commands.append(cmd)
+    """command : VARY SYMBOL SYMBOL NUMBER NUMBER NUMBER NUMBER
+                | VARY SYMBOL SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER"""
+    if p[3] == 'linear': #linear
+        cmd = {'op' : p[1], 'args' : p[4:], 'knob' : p[2]}
+        symbols[p[2]] = ['knob', 0]
+        commands.append(cmd)
+    if p[3] == 'polynomial': #x^n
+        cmd = {'op' : p[1], 'args' : p[4:], 'knob' : p[2]}
+        symbols[p[2]] = ['knob', 1]
+        commands.append(cmd)
+    if p[3] == 'exponential': #b^x
+        cmd = {'op' : p[1], 'args' : p[4:], 'knob' : p[2]}
+        symbols[p[2]] = ['knob', 2]
+        commands.append(cmd)
+        
 
 def p_command_knobs(p):
     """command : SET SYMBOL NUMBER
