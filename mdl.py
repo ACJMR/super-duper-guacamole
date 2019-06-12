@@ -293,7 +293,7 @@ def p_command_vary(p):
         cmd = {'op' : p[1], 'args' : p[4:], 'knob' : p[2]}
         symbols[p[2]] = ['knob', 2]
         commands.append(cmd)
-        
+
 
 def p_command_knobs(p):
     """command : SET SYMBOL NUMBER
