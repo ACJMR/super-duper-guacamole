@@ -103,6 +103,7 @@ def run(filename):
                          {'red': [0.2, 0.5, 0.5],
                           'green': [0.2, 0.5, 0.5],
                           'blue': [0.2, 0.5, 0.5]}]
+    print(symbols)
     reflect = '.white'
 
     (name, num_frames) = first_pass(commands)
@@ -129,7 +130,7 @@ def run(filename):
         screen = new_screen()
         zbuffer = new_zbuffer()
         tmp = []
-        print(commands)
+        #print(commands)
         for command in commands:
             c = command['op']
             args = command['args']

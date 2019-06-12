@@ -28,11 +28,33 @@ def get_lighting(normal, view, ambient, light, symbols, reflect ):
     normalize(light[LOCATION])
     normalize(view)
     r = symbols[reflect][1]
+    d = [0,0,0]
+    s = [0,0,0]
+    light_present = False
 
     a = calculate_ambient(ambient, r)
-    d = calculate_diffuse(light, r, n)
-    s = calculate_specular(light, r, view, n)
+    for l in symbols:                  #loops through all lights, if no light, set default
+        if symbols[l][0] == 'light':
+            light_present = True
+            li = [0,0]
+            li[0] = symbols[l][1]['location']
+            li[1] = symbols[l][1]['color']
+            d[0] += calculate_diffuse(li, r, n)[0]
+            d[1] += calculate_diffuse(li, r, n)[1]
+            d[2] += calculate_diffuse(li, r, n)[2]
+            s[0] += calculate_specular(li, r, view, n)[0]
+            s[1] += calculate_specular(li, r, view, n)[1]
+            s[2] += calculate_specular(li, r, view, n)[2]
 
+    if (not light_present): #if no light present, set default light
+        li = light
+        d[0] += calculate_diffuse(li, r, n)[0]
+        d[1] += calculate_diffuse(li, r, n)[1]
+        d[2] += calculate_diffuse(li, r, n)[2]
+        s[0] += calculate_specular(li, r, view, n)[0]
+        s[1] += calculate_specular(li, r, view, n)[1]
+        s[2] += calculate_specular(li, r, view, n)[2]
+    
     i = [0, 0, 0]
     i[RED] = int(a[RED] + d[RED] + s[RED])
     i[GREEN] = int(a[GREEN] + d[GREEN] + s[GREEN])
