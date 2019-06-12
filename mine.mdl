@@ -1,8 +1,9 @@
-frames 10
+frames 20
 basename mine
 push
 light Two 0 0 1 255 0 255
-light three -1 0 0 0 0 255
-move 250 250 0
-torus 0 0 0 75 125
-vary red 0 9 0 1
+move 0 500 0 y
+move 500 0 0 x
+sphere 0 0 0 50
+vary x linear 0 19 0 1
+vary y exponential 7 0 19 0 1
