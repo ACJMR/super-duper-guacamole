@@ -1,10 +1,117 @@
-frames 20
-shading phong
+frames 40
+shading gouraud
 basename mine
+light one 0 0 1 89 152 255
+light two 0 1 0 122 226 255
+light three 0 -1 0 177 122 255
+
 push
-light Two 0 0 1 255 0 255
-move 0 500 0 y
-move 500 0 0 x
-sphere 0 0 0 50
-vary x linear 0 19 0 1
-vary y exponential 7 0 19 0 1
+move 250 400 250
+box -250 -270 -500 500 130 20
+scale 50 50 50
+rotate y 360 deg
+rotate x 360 deg
+mesh :icosahedron
+pop
+
+push
+move 60 100 0
+scale 5 5 5
+rotate x -90
+rotate z 90
+rotate z 360 p1
+mesh :human
+vary p1 polynomial 8 0 39 0 1 
+pop
+
+push
+move 120 100 0
+scale 5 5 5
+rotate x -90
+rotate z 90
+move 0 0 10 p2
+mesh :human
+vary p2 linear 0 9 0 1
+vary p2 linear 10 19 1 0
+vary p2 linear 20 29 0 1
+vary p2 linear 30 39 1 0
+pop
+
+push
+move 180 100 0
+scale 5 5 5
+rotate x -90
+rotate z 90
+move 0 36 -9 movp3
+rotate z 360 rotp3
+mesh :human
+vary movp3 linear 0 19 0 1
+vary movp3 linear 20 39 1 0
+vary rotp3 linear 0 19 0 1
+vary rotp3 linear 20 39 1 0
+pop
+
+push
+move 240 100 0
+scale 5 5 5
+rotate x -90
+rotate z 90
+move 0 0 -7 movp4
+mesh :human
+vary movp4 exponential 2 0 19 0 1
+vary movp4 exponential 2 20 39 1 0
+pop
+
+push
+move 300 100 0
+scale 5 5 5
+rotate x -90
+rotate z 90
+rotate z 90 rotp5
+move 0 -10 0 movp5
+mesh :human
+vary rotp5 linear 0 19 0 1
+vary rotp5 linear 20 39 1 0
+vary movp5 linear 0 19 0 1
+vary movp5 linear 20 39 1 0
+pop
+
+push
+move 360 100 0
+scale 5 5 5
+rotate x -90
+rotate z 90
+rotate z -90 rotp6
+move 0 10 0 movp6
+mesh :human
+vary rotp6 linear 0 19 0 1
+vary rotp6 linear 20 39 1 0
+vary movp6 linear 0 19 0 1
+vary movp6 linear 20 39 1 0
+pop
+
+push
+move 420 100 0
+scale 5 5 5
+rotate x -90
+rotate z 90
+move 0 0 -20 movxp7
+move 0 5 0 movyp7
+mesh :human
+vary movxp7 linear 0 19 0 1
+vary movxp7 linear 20 39 1 0
+vary movyp7 polynomial 2 0 19 -1 1
+vary movyp7 polynomial 2 20 39 1 -1
+pop
+
+push
+move 480 100 0
+scale 5 5 5
+rotate x -90
+rotate z 90
+mesh :human
+pop
+
+
+vary deg linear 0 39 0 1
+
