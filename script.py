@@ -116,7 +116,7 @@ def run(filename):
     #screen = new_screen()
     #zbuffer = new_zbuffer()
     #tmp = []
-    step_3d = 100
+    step_3d = 50
     consts = ''
     coords = []
     coords1 = []
@@ -129,7 +129,8 @@ def run(filename):
         screen = new_screen()
         zbuffer = new_zbuffer()
         tmp = []
-        print(commands)
+
+        #checking what type of shading the user wants
         if symbols['shading'][1]:
             shading = symbols['shading'][1]
         else:
