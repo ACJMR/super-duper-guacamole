@@ -68,7 +68,7 @@ def add_obj(polygons, filename):
             z2 = float(vertices[vertex1][2])
             add_polygon(polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2)
 
-def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, cnorm0, cnorm1=[300,300,300]):
+def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color0, color1=[300,300,300], normal0=[600, 600, 600], normal1=[600,600,600]):
     if x0 > x1:
         tx = x0
         tz = z0
@@ -76,49 +76,69 @@ def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, cnorm0, cnorm1=[300,300,30
         z0 = z1
         x1 = tx
         z1 = tz
-        if cnorm1[0] != 300:
-            cnormt = cnorm0
-            cnorm0 = cnorm1
-            cnorm1 = cnormt
+        if color1[0] != 300:
+            colort = color0
+            color0 = color1
+            color1 = colort
+        if normal0[0] != 600:
+            normalt = normal0
+            normal0 = normal1
+            normal1 = normalt
     x = x0
     z = z0
-    if cnorm1[0] != 300:
-        r = cnorm0[0]
-        g = cnorm0[1]
-        b = cnorm0[2]
+    if color1[0] != 300:
+        r = color0[0]
+        g = color0[1]
+        b = color0[2]
+    if normal0[0] != 600:
+        nx = normal0[0]
+        ny = normal0[1]
+        nz = normal0[2]
 
     delta_z = (z1 - z0) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
-    if cnorm1[0] != 300:
-        dr = (cnorm1[0] - cnorm0[0]) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
-        dg = (cnorm1[1] - cnorm0[1]) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
-        db = (cnorm1[2] - cnorm0[2]) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
+    if color1[0] != 300:
+        dr = (color1[0] - color0[0]) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
+        dg = (color1[1] - color0[1]) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
+        db = (color1[2] - color0[2]) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
+    if normal0[0] != 600:
+        dnx = (normal1[0] - normal0[0]) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
+        dny = (normal1[1] - normal0[1]) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
+        dnz = (normal1[2] - normal0[2]) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
 
     while x <= x1:
-        if cnorm1[0] != 300:
+        if color1[0] != 300:
             color = [int(r),int(g),int(b)]
+        elif normal0[0] != 600:
+            normal = [nx, ny, nz]
+            color = get_lighting(normal, color0[0], color0[1], color0[2], color0[3], color0[4])
         else:
-            color = cnorm0
-        print("y", y, "  color", color)
+            color = color0
         plot(screen, zbuffer, color, x, y, z)
         x+= 1
         z+= delta_z
-        if cnorm1[0] != 300:
+        if color1[0] != 300:
             r += dr
             g += dg
             b += db
+        if normal0[0] != 600:
+            nx += dnx
+            ny += dny
+            nz += dnz
 
-def scanline_convert(polygons, i, screen, zbuffer, color):
+def scanline_convert(polygons, i, screen, zbuffer, color=["a"], normals=[600, 600, 600]):
     flip = False
     BOT = 0
     TOP = 2
     MID = 1
     PNT = 0
     CLR = 1
+    NRM = 2
 
-    int_color = isinstance(color[0], int)
-    points = [ [(polygons[i][0], polygons[i][1], polygons[i][2]), color[0]],
-               [(polygons[i+1][0], polygons[i+1][1], polygons[i+1][2]), color[1]],
-               [(polygons[i+2][0], polygons[i+2][1], polygons[i+2][2]), color[2]]]
+    flat = isinstance(color[0], int)
+    int_color = isinstance(color[0], str)
+    points = [ [(polygons[i][0], polygons[i][1], polygons[i][2]), color[0], normals[0]],
+               [(polygons[i+1][0], polygons[i+1][1], polygons[i+1][2]), color[1], normals[1]],
+               [(polygons[i+2][0], polygons[i+2][1], polygons[i+2][2]), color[2], normals[2]]]
 
     # alas random color, we hardly knew ye
     #color = [0,0,0]
@@ -131,13 +151,20 @@ def scanline_convert(polygons, i, screen, zbuffer, color):
     z0 = points[BOT][PNT][2]
     x1 = points[BOT][PNT][0]
     z1 = points[BOT][PNT][2]
-    if not int_color:
+    if not int_color and normals[0] == 600 and not flat:
         r0 = points[BOT][CLR][0]
         g0 = points[BOT][CLR][1]
         b0 = points[BOT][CLR][2]
         r1 = points[BOT][CLR][0]
         g1 = points[BOT][CLR][1]
         b1 = points[BOT][CLR][2]
+    if normals[0] != 600:
+        nx0 = points[BOT][NRM][0]
+        ny0 = points[BOT][NRM][1]
+        nz0 = points[BOT][NRM][2]
+        nx1 = points[BOT][NRM][0]
+        ny1 = points[BOT][NRM][1]
+        nz1 = points[BOT][NRM][2]
 
     y = int(points[BOT][PNT][1])
 
@@ -149,13 +176,20 @@ def scanline_convert(polygons, i, screen, zbuffer, color):
     dz0 = (points[TOP][PNT][2] - points[BOT][PNT][2]) / distance0 if distance0 != 0 else 0
     dx1 = (points[MID][PNT][0] - points[BOT][PNT][0]) / distance1 if distance1 != 0 else 0
     dz1 = (points[MID][PNT][2] - points[BOT][PNT][2]) / distance1 if distance1 != 0 else 0
-    if not int_color:
+    if not int_color and normals[0] == 600 and not flat:
         dr0 = (points[TOP][CLR][0] - points[BOT][CLR][0]) / distance0 if distance0 != 0 else 0
         dg0 = (points[TOP][CLR][1] - points[BOT][CLR][1]) / distance0 if distance0 != 0 else 0
         db0 = (points[TOP][CLR][2] - points[BOT][CLR][2]) / distance0 if distance0 != 0 else 0
         dr1 = (points[MID][CLR][0] - points[BOT][CLR][0]) / distance1 if distance1 != 0 else 0
         dg1 = (points[MID][CLR][1] - points[BOT][CLR][1]) / distance1 if distance1 != 0 else 0
         db1 = (points[MID][CLR][2] - points[BOT][CLR][2]) / distance1 if distance1 != 0 else 0
+    if normals[0] != 600:
+        dnx0 = (points[TOP][NRM][0] - points[BOT][NRM][0]) / distance0 if distance0 != 0 else 0
+        dny0 = (points[TOP][NRM][1] - points[BOT][NRM][1]) / distance0 if distance0 != 0 else 0
+        dnz0 = (points[TOP][NRM][2] - points[BOT][NRM][2]) / distance0 if distance0 != 0 else 0
+        dnx1 = (points[MID][NRM][0] - points[BOT][NRM][0]) / distance1 if distance1 != 0 else 0
+        dny1 = (points[MID][NRM][1] - points[BOT][NRM][1]) / distance1 if distance1 != 0 else 0
+        dnz1 = (points[MID][NRM][2] - points[BOT][NRM][2]) / distance1 if distance1 != 0 else 0
 
     while y <= int(points[TOP][PNT][1]):
         if ( not flip and y >= int(points[MID][PNT][1])):
@@ -163,36 +197,56 @@ def scanline_convert(polygons, i, screen, zbuffer, color):
 
             dx1 = (points[TOP][PNT][0] - points[MID][PNT][0]) / distance2 if distance2 != 0 else 0
             dz1 = (points[TOP][PNT][2] - points[MID][PNT][2]) / distance2 if distance2 != 0 else 0
-            if not int_color:
+            if not int_color and normals[0] == 600 and not flat:
                 dr1 = (points[TOP][CLR][0] - points[MID][CLR][0]) / distance2 if distance2 != 0 else 0
                 dg1 = (points[TOP][CLR][1] - points[MID][CLR][1]) / distance2 if distance2 != 0 else 0
                 db1 = (points[TOP][CLR][2] - points[MID][CLR][2]) / distance2 if distance2 != 0 else 0
+            if normals[0] != 600:
+                dnx1 = (points[TOP][NRM][0] - points[MID][NRM][0]) / distance2 if distance2 != 0 else 0
+                dny1 = (points[TOP][NRM][1] - points[MID][NRM][1]) / distance2 if distance2 != 0 else 0
+                dnz1 = (points[TOP][NRM][2] - points[MID][NRM][2]) / distance2 if distance2 != 0 else 0
 
             x1 = points[MID][PNT][0]
             z1 = points[MID][PNT][2]
-            if not int_color:
+            if not int_color and normals[0] == 600 and not flat:
                 r1 = points[MID][CLR][0]
                 g1 = points[MID][CLR][1]
                 b1 = points[MID][CLR][2]
+            if normals[0] != 600:
+                nx1 = points[MID][NRM][0]
+                ny1 = points[MID][NRM][1]
+                nz1 = points[MID][NRM][2]
 
         #draw_line(int(x0), y, z0, int(x1), y, z1, screen, zbuffer, color)
-        if not int_color:
+        if not int_color and normals[0] == 600 and not flat:
             color0 = [r0, g0, b0]
             color1 = [r1, g1, b1]
             draw_scanline(int(x0), z0, int(x1), z1, y, screen, zbuffer, color0, color1)
+        elif normals[0] != 600:
+            normal0 = [nx0, ny0, nz0]
+            normal1 = [nx1, ny1, nz1]
+            fakecolor1 = [300, 300, 300]
+            draw_scanline(int(x0), z0, int(x1), z1, y, screen, zbuffer, color, fakecolor1, normal0, normal1)
         else:
             draw_scanline(int(x0), z0, int(x1), z1, y, screen, zbuffer, color)
         x0+= dx0
         z0+= dz0
         x1+= dx1
         z1+= dz1
-        if not int_color:
+        if not int_color and normals[0] == 600 and not flat:
             r0+= dr0
             g0+= dg0
             b0+= db0
             r1+= dr1
             g1+= dg1
             b1+= db1
+        if normals[0] != 600:
+            nx0+= dnx0
+            ny0+= dny0
+            nz0+= dnz0
+            nx1+= dnx1
+            ny1+= dny1
+            nz1+= dnz1
         y+= 1
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
@@ -255,8 +309,17 @@ def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, ref
                 color1 = get_lighting(normal1, view, ambient, light, symbols, reflect)
                 color2 = get_lighting(normal2, view, ambient, light, symbols, reflect)
                 colors = [color0, color1, color2]
-                print("colors", colors)
+                print("point: ", point)
+                print("npoint: ", normal0)
                 scanline_convert(polygons, point, screen, zbuffer, colors)
+            elif shading == "phong":
+                normal0 = vnorms[tuple(polygons[point])]
+                normal1 = vnorms[tuple(polygons[point + 1])]
+                normal2 = vnorms[tuple(polygons[point + 2])]
+                save_for_color = [view, ambient, light, symbols, reflect]
+                normals = [normal0, normal1, normal2]
+                scanline_convert(polygons, point, screen, zbuffer, save_for_color, normals)
+
             # draw_line( int(polygons[point][0]),
             #            int(polygons[point][1]),
             #            polygons[point][2],
@@ -488,7 +551,7 @@ def add_point( matrix, x, y, z=0 ):
 
 
 
-def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, cnorm0, cnorm1=[300,300,300]):
+def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color0, color1=[300,300,300]):
 
     #swap points if going right -> left
     if x0 > x1:
@@ -502,18 +565,18 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, cnorm0, cnorm1=[300,300,
         y1 = yt
         z1 = zt
         #if a 2nd normal exists
-        if cnorm1[0] != 300:
-            cnormt = cnorm0
-            cnorm0 = cnorm1
-            cnorm1 = cnormt
+        if color1[0] != 300:
+            cnormt = color0
+            color0 = color1
+            color1 = cnormt
 
     x = x0
     y = y0
     z = z0
-    if cnorm1[0] != 300:
-        r = cnorm0[0]
-        g = cnorm0[1]
-        b = cnorm0[2]
+    if color1[0] != 300:
+        r = color0[0]
+        g = color0[1]
+        b = color0[2]
     A = 2 * (y1 - y0)
     B = -2 * (x1 - x0)
     wide = False
@@ -557,15 +620,15 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, cnorm0, cnorm1=[300,300,
             loop_end = y
 
     dz = (z1 - z0) / distance if distance != 0 else 0
-    if cnorm1[0] != 300:
-        dr = (cnorm1[0] - cnorm0[0]) / distance if distance != 0 else 0
-        dg = (cnorm1[1] - cnorm0[1]) / distance if distance != 0 else 0
-        db = (cnorm1[2] - cnorm0[2]) / distance if distance != 0 else 0
+    if color1[0] != 300:
+        dr = (color1[0] - color0[0]) / distance if distance != 0 else 0
+        dg = (color1[1] - color0[1]) / distance if distance != 0 else 0
+        db = (color1[2] - color0[2]) / distance if distance != 0 else 0
     while ( loop_start < loop_end ):
-        if cnorm1[0] != 300:
+        if color1[0] != 300:
             color = [int(r),int(g),int(b)]
         else:
-            color = cnorm0
+            color = color0
         plot( screen, zbuffer, color, x, y, z )
         if ( (wide and ((A > 0 and d > 0) or (A < 0 and d < 0))) or
              (tall and ((A > 0 and d < 0) or (A < 0 and d > 0 )))):
@@ -578,16 +641,16 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, cnorm0, cnorm1=[300,300,
             y+= dy_east
             d+= d_east
         z+= dz
-        if cnorm1[0] != 300:
+        if color1[0] != 300:
             r+= dr
             g+= dg
             b+= db
         #change color here
         loop_start+= 1
     #change color again
-    if cnorm1[0] != 300:
+    if color1[0] != 300:
         print("not 300")
         color = [int(r),int(g),int(b)]
     else:
-        color = cnorm0
+        color = color0
     plot( screen, zbuffer, color, x, y, z )
