@@ -321,9 +321,35 @@ def p_command_constants(p):
     commands.append(cmd)
 
 def p_command_light(p):
-    "command : LIGHT SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER"
+    """command : LIGHT SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
+               | LIGHT SYMBOL SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER
+               | LIGHT SYMBOL NUMBER SYMBOL NUMBER NUMBER NUMBER NUMBER
+               | LIGHT SYMBOL NUMBER NUMBER SYMBOL NUMBER NUMBER NUMBER
+               | LIGHT SYMBOL NUMBER NUMBER NUMBER SYMBOL NUMBER NUMBER
+               | LIGHT SYMBOL NUMBER NUMBER NUMBER NUMBER SYMBOL NUMBER
+               | LIGHT SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER SYMBOL"""
     symbols[p[2]] = ['light', {'location' : p[3:6], 'color' : p[6:]}]
-    cmd = {'op':p[1], 'args' : None, 'light' : p[2] }
+    cmd = {'op':p[1], 'args' : None, 'light' : p[2], 'knob' : None}
+
+    if isinstance(p[3], str): #position x
+        cmd['knob'] = p[3]
+        symbols[p[2]] = ['knob', 3]
+    if isinstance(p[4], str): #position y
+        cmd['knob'] = p[4]
+        symbols[p[2]] = ['knob', 4]
+    if isinstance(p[5], str): #position z
+        cmd['knob'] = p[5]
+        symbols[p[2]] = ['knob', 5]
+    if isinstance(p[6], str): #color R
+        cmd['knob'] = p[6]
+        symbols[p[2]] = ['knob', 6]
+    if isinstance(p[7], str): #color G
+        cmd['knob'] = p[7]
+        symbols[p[2]] = ['knob', 7]
+    if isinstance(p[8], str): #color B
+        cmd['knob'] = p[8]
+        symbols[p[2]] = ['knob', 8]
+
     commands.append(cmd)
 
 def p_command_shading(p):
