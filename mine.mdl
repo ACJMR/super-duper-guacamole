@@ -1,4 +1,5 @@
 frames 20
+shading phong
 basename mine
 push
 light Two 0 0 1 255 0 255

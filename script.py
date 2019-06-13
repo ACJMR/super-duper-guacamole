@@ -156,7 +156,7 @@ def run(filename):
         tmp = []
 
         #checking what type of shading the user wants
-        if symbols['shading'][1]:
+        if 'shading' in symbols:
             shading = symbols['shading'][1]
         else:
             shading = 'flat'

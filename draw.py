@@ -26,7 +26,6 @@ def add_obj(polygons, filename):
         elif args[0] == 'f':
             if len(args) == 4:
                 if '//' in args[1]:
-                    print("found //")
                     p1 = args[1]
                     p1 = p1.split('//')[0]
                     p2 = args[2]
@@ -34,7 +33,6 @@ def add_obj(polygons, filename):
                     p3 = args[3]
                     p3 = p3.split('//')[0]
                 elif '/' in args[1]:
-                    print("found /")
                     p1 = args[1]
                     p1 = p1.split('/')[0]
                     p2 = args[2]
@@ -42,14 +40,12 @@ def add_obj(polygons, filename):
                     p3 = args[3]
                     p3 = p3.split('/')[0]
                 else:
-                    print("didnt find anything")
                     p1 = args[1]
                     p2 = args[2]
                     p3 = args[3]
                 pts = [p1, p2, p3]
             elif len(args) == 5:
                 if '//' in args[1]:
-                    print("FOUND //")
                     p1 = args[1]
                     p1 = p1.split('//')[0]
                     p2 = args[2]
@@ -68,7 +64,6 @@ def add_obj(polygons, filename):
                     p4 = args[4]
                     p4 = p4.split('/')[0]
                 else:
-                    print("DID NOT FIND ANYTHING")
                     p1 = args[1]
                     p2 = args[2]
                     p3 = args[3]
@@ -304,7 +299,6 @@ def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x2, y2, z2)
 
 def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, reflect, shading):
-    print(shading)
     if len(polygons) < 2:
         print 'Need at least 3 points to draw'
         return
@@ -327,19 +321,14 @@ def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, ref
         # for averaging of the normals
             #accumulating the sums
             nx = norm[0]
-            print("normalx", nx)
             ny = norm[1]
-            print("normaly", ny)
             nz = norm[2]
-            print("normalz", nz)
             vnorms[tuple(polygons[point])] = [vnorms[tuple(polygons[point])][0] + nx,  vnorms[tuple(polygons[point])][1] + ny, vnorms[tuple(polygons[point])][2] + nz]
             vnorms[tuple(polygons[point + 1])] = [vnorms[tuple(polygons[point + 1])][0] + nx, vnorms[tuple(polygons[point + 1])][1] + ny, vnorms[tuple(polygons[point + 1])][2] + nz]
             vnorms[tuple(polygons[point + 2])] = [vnorms[tuple(polygons[point + 2])][0] + nx, vnorms[tuple(polygons[point + 2])][1] + ny, vnorms[tuple(polygons[point + 2])][2] + nz]
             point += 3
         for key in vnorms:
-            print("before", vnorms[key])
             normalize(vnorms[key])
-            print("after", vnorms[key])
 
     point = 0
     while point < len(polygons) - 2:
@@ -358,8 +347,6 @@ def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, ref
                 color1 = get_lighting(normal1, view, ambient, light, symbols, reflect)
                 color2 = get_lighting(normal2, view, ambient, light, symbols, reflect)
                 colors = [color0, color1, color2]
-                print("point: ", point)
-                print("npoint: ", normal0)
                 scanline_convert(polygons, point, screen, zbuffer, colors)
             elif shading == "phong":
                 normal0 = vnorms[tuple(polygons[point])]
