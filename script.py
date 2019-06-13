@@ -53,24 +53,50 @@ def first_pass( commands ):
   dictionary corresponding to the given knob with the
   appropriate value.
   ===================="""
-def second_pass( commands, num_frames ):
+def second_pass( commands, num_frames, symbols):
     frames = [ {} for i in range(int(num_frames)) ]
     for command in commands:
         c = command["op"]
         if c == "vary":
             knob = command["knob"]
             args = command["args"]
-            start_frame = args[0]
-            end_frame = args[1]
-            start_value = args[2]
-            end_value = args[3]
             counter = 0
-            for i, fram in enumerate(frames):
-                if i <= end_frame and i >= start_frame:
-                    frames_bet = end_frame - start_frame
-                    step = (end_value - start_value)/frames_bet
-                    frames[i][knob] = start_value + counter*step
-                    counter = counter + 1;
+            if (symbols[knob][1] == 0): #linear
+                start_frame = args[0]
+                end_frame = args[1]
+                start_value = args[2]
+                end_value = args[3]
+                for i, fram in enumerate(frames):
+                    if i <= end_frame and i >= start_frame:
+                        frames_bet = end_frame - start_frame
+                        step = (end_value - start_value)/frames_bet
+                        frames[i][knob] = start_value + counter*step
+                        counter = counter + 1;
+            if (symbols[knob][1] == 1): #polynomial degree n
+                n = args[0]
+                start_frame = args[1]
+                end_frame = args[2]
+                start_value = args[3]
+                end_value = args[4]
+                for i, fram in enumerate(frames):
+                    if i <= end_frame and i >= start_frame:
+                        numstep = end_frame - start_frame
+                        dx = (end_value - start_value)/numstep
+                        frames[i][knob] = start_value + math.pow(dx*i,n)
+                        counter = counter + 1;
+            if (symbols[knob][1] == 2): #exponential base b
+                b = args[0]
+                start_frame = args[1]
+                end_frame = args[2]
+                start_value = args[3]
+                end_value = args[4]
+                for i, fram in enumerate(frames):
+                    if i <= end_frame and i >= start_frame:
+                        numstep = end_frame - start_frame
+                        dx = (end_value - start_value)/numstep
+                        frames[i][knob] = start_value + math.pow(b,dx*i) - 1
+                        counter = counter + 1;
+
     return frames
 
 def run(filename):
@@ -103,11 +129,10 @@ def run(filename):
                          {'red': [0.2, 0.5, 0.5],
                           'green': [0.2, 0.5, 0.5],
                           'blue': [0.2, 0.5, 0.5]}]
+    print(symbols)
     reflect = '.white'
-
     (name, num_frames) = first_pass(commands)
-    frames = second_pass(commands, num_frames)
-
+    frames = second_pass(commands, num_frames,symbols)
 
     tmp = new_matrix()
     ident( tmp )
@@ -142,7 +167,7 @@ def run(filename):
             knob_value = 1
 
             if c == 'mesh':
-                print(args[0])
+                #print(args[0])
                 filename = args[0] + ".obj"
                 add_obj(tmp, filename)
                 matrix_mult(stack[-1], tmp)
