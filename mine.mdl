@@ -112,6 +112,4 @@ rotate z 90
 mesh :human
 pop
 
-
 vary deg linear 0 39 0 1
-

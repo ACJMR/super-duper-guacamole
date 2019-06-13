@@ -293,7 +293,7 @@ def p_command_vary(p):
         cmd = {'op' : p[1], 'args' : p[4:], 'knob' : p[2]}
         symbols[p[2]] = ['knob', 2]
         commands.append(cmd)
-        
+
 
 def p_command_knobs(p):
     """command : SET SYMBOL NUMBER
@@ -321,9 +321,9 @@ def p_command_constants(p):
     commands.append(cmd)
 
 def p_command_light(p):
-    "command : LIGHT SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER"
+    """command : LIGHT SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER"""
     symbols[p[2]] = ['light', {'location' : p[3:6], 'color' : p[6:]}]
-    cmd = {'op':p[1], 'args' : None, 'light' : p[2] }
+    cmd = {'op':p[1], 'args' : None, 'light' : p[2], 'knob' : None}
     commands.append(cmd)
 
 def p_command_shading(p):
