@@ -82,9 +82,11 @@ def second_pass( commands, num_frames, symbols):
                     if i <= end_frame and i >= start_frame:
                         numstep = end_frame - start_frame
                         dx = (end_value - start_value)/numstep
-                        frames[i][knob] = start_value + math.pow(dx*i,n)
+                        num = math.pow(start_value + dx*counter,n)
+                        #print start_value + num
+                        frames[i][knob] = num
                         counter = counter + 1;
-            if (symbols[knob][1] == 2): #exponential base b
+            '''if (symbols[knob][1] == 2): #exponential base b
                 b = args[0]
                 start_frame = args[1]
                 end_frame = args[2]
@@ -93,9 +95,11 @@ def second_pass( commands, num_frames, symbols):
                 for i, fram in enumerate(frames):
                     if i <= end_frame and i >= start_frame:
                         numstep = end_frame - start_frame
-                        dx = (end_value - start_value)/numstep
-                        frames[i][knob] = start_value + math.pow(b,dx*i) - 1
-                        counter = counter + 1;
+                        dx = (1/b)*(end_value-start_value)/numstep
+                        num = math.pow(b,start_value + dx*counter) - 1
+                        print(num)
+                        frames[i][knob] = num
+                        counter = counter + 1;'''
 
     return frames
 

@@ -21,7 +21,7 @@ rotate x -90
 rotate z 90
 rotate z 360 p1
 mesh :human
-vary p1 polynomial 8 0 39 0 1 
+vary p1 polynomial 2 0 39 0 1
 pop
 
 push
@@ -32,8 +32,8 @@ rotate z 90
 move 0 0 10 p2
 mesh :human
 vary p2 linear 0 9 0 1
-vary p2 linear 10 19 1 0
-vary p2 linear 20 29 0 1
+vary p2 linear 10 15 1 0
+vary p2 linear 16 29 0 1
 vary p2 linear 30 39 1 0
 pop
 
@@ -42,7 +42,7 @@ move 180 100 0
 scale 5 5 5
 rotate x -90
 rotate z 90
-move 0 36 -9 movp3
+move 0 36 -12 movp3
 rotate z 360 rotp3
 mesh :human
 vary movp3 linear 0 19 0 1
@@ -56,10 +56,10 @@ move 240 100 0
 scale 5 5 5
 rotate x -90
 rotate z 90
-move 0 0 -7 movp4
+move 0 0 -10 movp4
 mesh :human
-vary movp4 exponential 2 0 19 0 1
-vary movp4 exponential 2 20 39 1 0
+vary movp4 polynomial 6 0 19 0 1
+vary movp4 polynomial 6 20 39 1 0
 pop
 
 push
@@ -95,13 +95,13 @@ move 420 100 0
 scale 5 5 5
 rotate x -90
 rotate z 90
-move 0 0 -20 movxp7
-move 0 5 0 movyp7
+move 0 0 -20 movyp7
+move 0 20 0 movxp7
 mesh :human
-vary movxp7 linear 0 19 0 1
-vary movxp7 linear 20 39 1 0
-vary movyp7 polynomial 2 0 19 -1 1
-vary movyp7 polynomial 2 20 39 1 -1
+vary movyp7 linear 0 19 0 1
+vary movyp7 linear 20 39 1 0
+vary movxp7 polynomial 3 0 19 0 1
+vary movxp7 polynomial 3 20 39 1 0
 pop
 
 push
@@ -109,7 +109,13 @@ move 480 100 0
 scale 5 5 5
 rotate x -90
 rotate z 90
+move 0 0 40 movp8
+rotate z 360 rotp8
 mesh :human
+vary movp8 polynomial 2 0 19 0 1
+vary movp8 polynomial 2 20 39 1 0
+vary rotp8 linear 0 19 0 1
+vary rotp8 linear 20 39 1 0
 pop
 
 vary deg linear 0 39 0 1
